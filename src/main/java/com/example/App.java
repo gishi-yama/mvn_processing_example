@@ -13,7 +13,7 @@ public class App extends PApplet {
 	private IService service;
 
 	public static void main(String[] args) {
-		PApplet.main(App.class);
+		PApplet.main(new String[]{App.class.getName()});
 	}
 
 	@Override
