@@ -31,11 +31,13 @@ public class TwitterService implements ITwitterService {
 		twitter = new TwitterFactory(cb.build()).getInstance();
 	}
 
+
 	@Override
-	public List<Status> getStatus() throws TwitterException {
+	public List<TimeLineBlock> getTimeLineBlock(int limit) throws TwitterException {
 		System.out.println("get status...");
 		return twitter.getHomeTimeline().stream()
-			.limit(MAX_STATUS)
+			.limit(limit)
+			.map(TimeLineBlock::new)
 			.collect(toList());
 	}
 }

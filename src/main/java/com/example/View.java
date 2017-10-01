@@ -10,18 +10,13 @@ import processing.core.PImage;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
 public class View extends PApplet {
 
 	private static final int W_SIZE = 1024;
-	private static final int H_SIZE = 768;
-	private static final int W_BLOCK = 956;
-	private static final int H_BLOCK = 64;
-	private static final int HW_ICON = 64;
-
+	private static final int H_SIZE = 720;
+	private static final int W_BLOCK = 940;
+	private static final int H_BLOCK = 80;
+	private static final int HW_ICON = 80;
 
 	@Inject
 	private ITwitterService service;
@@ -32,11 +27,12 @@ public class View extends PApplet {
 	@Override
 	public void setup() {
 		super.setup();
-		x = 0;
-		y = 0;
 		getInjector().injectMembers(this);
 		noLoop();
-		background(224,224,224);
+		PFont font = createFont("MS Gothic", 12, true);
+		textFont(font);
+		fill(0);
+		stroke(255);
 	}
 
 	@Override
@@ -47,34 +43,29 @@ public class View extends PApplet {
 
 	@Override
 	public void draw() {
-		super.draw();
+		makeBlocks();
+	}
 
-		PFont font = createFont("MS Gothic", 16, true);
-		textFont(font);
-		fill(0);
+	@Override
+	public void mouseReleased() {
+		super.mouseReleased();
+		redraw();
+	}
+
+	protected void makeBlocks() {
+		reflesh();
 		try {
-			service.getStatus()
+			service.getTimeLineBlock(8)
 				.forEach(this::makeBlock);
 		} catch (TwitterException e) {
 			e.printStackTrace();
 		}
 	}
 
-	@Override
-	public void mouseReleased() {
-		super.mouseReleased();
-		draw();
-	}
-
-	protected void makeBlock(Status status) {
-		String userName = status.getUser().getName();
-		String text = status.getText();
-		Instant instant = status.getCreatedAt().toInstant();
-		ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
-		PImage icon = loadImage(status.getUser().getOriginalProfileImageURL(), "png");
-		String str = String.format("%s:%s\n%s", userName, text, zdt.toString());
+	protected void makeBlock(TimeLineBlock tlb) {
+		PImage icon = loadImage(tlb.getIconUrI(), tlb.getExtention());
 		image(icon, x, y, HW_ICON, HW_ICON);
-		text(str, HW_ICON, y, W_BLOCK, H_BLOCK);
+		text(tlb.getBlockMessage(), HW_ICON, y, W_BLOCK, H_BLOCK);
 		y = y + H_BLOCK;
 		line(x, y, W_SIZE, y);
 	}
@@ -86,6 +77,12 @@ public class View extends PApplet {
 				bind(ITwitterService.class).to(TwitterService.class);
 			}
 		});
+	}
+
+	protected void reflesh() {
+		background(236);
+		x = 0;
+		y = 0;
 	}
 
 }

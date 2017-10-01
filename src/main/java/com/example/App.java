@@ -8,5 +8,4 @@ public class App {
 		PApplet.main(new String[]{View.class.getName()});
 	}
 
-
 }
