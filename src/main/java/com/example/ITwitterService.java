@@ -8,6 +8,6 @@ import java.util.List;
 @ImplementedBy(TwitterService.class)
 public interface ITwitterService {
 
-	List<TimeLineBlock> getTimeLineBlock(int limit) throws TwitterException;
+	List<TimeLineBlock> getTimeLineBlock(int limit, String tag) throws TwitterException;
 
 }

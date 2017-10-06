@@ -1,9 +1,6 @@
 package com.example;
 
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
+import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.util.List;
@@ -33,9 +30,12 @@ public class TwitterService implements ITwitterService {
 
 
 	@Override
-	public List<TimeLineBlock> getTimeLineBlock(int limit) throws TwitterException {
+	public List<TimeLineBlock> getTimeLineBlock(int limit, String tag) throws TwitterException {
 		System.out.println("get status...");
-		return twitter.getHomeTimeline().stream()
+		return twitter.search(new Query(tag))
+      .getTweets()
+      .stream()
+      .filter(s -> !s.getUser().isProtected())
 			.limit(limit)
 			.map(TimeLineBlock::new)
 			.collect(toList());

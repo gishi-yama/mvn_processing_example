@@ -2,7 +2,7 @@ package com.example.value;
 
 public class Tweet extends SingleValue<String> {
 
-	private static final int MAX_LENGTH = 140;
+	private static final int MAX_LENGTH = 280;
 
 	public Tweet(String value) {
 		super(value);
